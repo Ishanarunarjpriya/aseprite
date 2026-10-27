@@ -1,5 +1,5 @@
 name: build
-on: [push, pull_request]
+on: [push, pull_request, workflow_dispatch]
 jobs:
   build:
     runs-on: ${{ matrix.os }}
@@ -111,3 +111,9 @@ jobs:
         export ASEPRITE=$PWD/build/bin/aseprite
         cd tests
         $XVFB bash run-tests.sh
+    - name: Upload Windows x64 build
+      if: ${{ runner.os == 'Windows' && matrix.ui == 'gui' && matrix.build_type == 'RelWithDebInfo' && matrix.scripting == 'lua' }}
+      uses: actions/upload-artifact@v4
+      with:
+        name: aseprite-windows-x64
+        path: build/bin/aseprite.exe
